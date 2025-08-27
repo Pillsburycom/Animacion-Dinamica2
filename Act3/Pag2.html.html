@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+    <title>Pagina 4</title>
+    <style>
+        body{
+          background-color: rgb(164, 226, 160);
+        }
+        canvas {
+            border: 3px solid rgb(145, 212, 108);
+            background-color:rgb(255, 255, 209);
+        }
+    </style>
+    <script>
+        var x = 100;
+        var y = 100;
+        var dx = 5;
+        var dy = 3;
+
+        var canvas, context;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // ----------- tus cuadros -----------
+            context.fillStyle = "White";
+            context.fillRect(350, 350, 40, 40);
+            context.fillRect(310, 350, 40, 40);
+            context.fillRect(300, 350, 40, 40);
+            context.fillRect(240, 350, 260, -120);
+            context.fillRect(500, 350, 120, 40);
+            context.fillRect(460, 350, 120, 40);
+            context.fillRect(500, 350, 120, -120);
+            context.fillRect(460, 350, 120, -120);
+            context.fillRect(240, 350, 60, 40);
+            context.fillRect(430, 190, 190, 40);
+            context.fillRect(430, 190, -190, 40);
+            context.fillRect(430, 150, 190, 40);
+            context.fillRect(430, 150, -190, 40);
+            context.fillRect(430, 110, 160, 40);
+            context.fillRect(430, 110, -160, 40);
+            context.fillRect(430, 70, 120, 40);
+            context.fillRect(430, 70, -120, 40);
+            context.fillRect(530, 350, 140, 40);
+            context.fillRect(530, 390, 140, 90);
+            context.fillRect(530, 390, -140, 90);
+            context.fillRect(250, 390, 140, 90);
+            context.fillRect(190, 390, 140, 90);
+            context.fillRect(190, 350, 140, 90); 
+            context.fillRect(230, 480, 400, 40);
+            context.fillRect(610, 150, 20, 200);             
+
+            //Borde
+            context.fillStyle = "Black";
+            context.fillRect(230, 520, 400, 20);
+            context.fillRect(310, 50, 240, 20); 
+            context.fillRect(310, 60, 20, 50);
+            context.fillRect(540, 50, 20, 60);
+            context.fillRect(590, 100, -50, 20);
+            context.fillRect(290, 100, 40, 20);
+            context.fillRect(590, 110, 20, 40);
+            context.fillRect(270, 110, 20, 40);
+            context.fillRect(220, 150, 20, 200);
+            context.fillRect(630, 150, 20, 200);
+            context.fillRect(670, 350, 20, 130);
+            context.fillRect(180, 350, 20, 130);  
+            
+            //Oreja Izquierda
+            context.fillRect(70, 70, 240, 40);
+            context.fillRect(70, 50, 220, 40);
+            context.fillRect(90, 20, 150, 40);
+
+            //Oreja Derecha
+            context.fillRect(560, 70, 50, 40);
+            context.fillRect(550, 20, 60, 50);
+            context.fillRect(560, 10, -60, 60);            
+            context.fillRect(560, 10, -90, 60);
+            context.fillRect(560, 0, -90, 60);  
+
+            // Nariz
+            context.fillRect(430, 350, 40, 40);
+            context.fillRect(390, 350, 40, 40);
+
+            // Ojitos
+            context.fillRect(290, 310, 40, 40);
+            context.fillRect(530, 310, 40, 40);
+            context.fillRect(290, 350, 40, 40);
+            context.fillRect(530, 350, 40, 40);
+
+            // ----------- Texto animado -----------
+            context.font = '60pt "Chewy"';
+            context.fillStyle = 'rgb(255, 244, 33)';
+            context.fillText('Pochacco', x, y);
+
+            // obtener ancho del texto para rebotar bien
+            var textWidth = context.measureText('Pochacco').width;
+            var textHeight = 60; // altura aproximada de la fuente
+
+            if (x + textWidth > canvas.width || x < 0) dx = -dx;
+            if (y > canvas.height || y - textHeight < 0) dy = -dy;
+
+            x += dx;
+            y += dy;
+        }
+
+        window.onload = function() {
+            canvas = document.getElementById("micanvas");
+            context = canvas.getContext("2d");
+            animate();
+        }
+    </script>
+</head>
+<body>
+    <img src="Pochacco-PNG-HD-Image.png" alt="Pochacco">
+    <canvas id="micanvas" width="800" height="600"></canvas>
+</body>
+</html>
