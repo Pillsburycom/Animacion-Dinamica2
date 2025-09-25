@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Rotate Two Images Opposite</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;  
+        align-items: center;
+        justify-content: flex-start;
+        height: 100vh;
+        margin: 0;
+        background: url("descarga.jpg"); 
+      }
+
+      header img {
+        width: 100%;      
+        max-width: 800px; 
+        height: auto;
+        display: block;
+      }
+      h1 {
+            color: rgb(0, 0, 0);
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 50px;
+      }
+      #canvas {
+        display: block;
+        margin-top: 10px;
+      }
+
+      aside {
+        color: rgb(255, 0, 0);
+        font-family: sans-serif;
+        margin-top: 10px;
+      }
+
+      .hidden-player {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="LogoBratz.png" alt="Encabezado">
+    </header>
+    <h1>🎵</h1>
+    <audio id="music" class="hidden-player" src="bratz_theme_song.mp3" loop></audio>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+    window.onload = function () {
+      const canvas = document.getElementById('canvas');
+      const context = canvas.getContext('2d');
+      const mouse = { x: 0, y: 0 };
+
+      const fondo  = new Image();
+      const disco1 = new Image();
+      const disco2 = new Image();
+
+      const offset1 = { x: -270, y: 70 }; // Primer disco
+      const offset2 = { x: 300,  y: 70 }; // Segundo disco
+
+      canvas.addEventListener('mousemove', e => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+      });
+
+      fondo.src  = "Tocadisco.png"; // Fondo
+      disco1.src = "Bratz 2.png";   // Primer disco
+      disco2.src = "Bratz.png";     // Segundo disco
+
+      fondo.onload = () => {
+        canvas.width  = fondo.width;
+        canvas.height = fondo.height;
+        animate();
+      };
+
+      function animate() {
+        requestAnimationFrame(animate);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        context.drawImage(fondo, 0, 0);
+        drawRotatingImage(disco1, offset1.x, offset1.y, false);
+        drawRotatingImage(disco2, offset2.x, offset2.y, true);
+      }
+
+      function drawRotatingImage(img, offsetX, offsetY, invert) {
+        const x = canvas.width / 2 + offsetX;
+        const y = canvas.height / 2 + offsetY;
+
+        const dx = mouse.x - x;
+        const dy = mouse.y - y;
+        let angle = Math.atan2(dy, dx);
+        if (invert) angle = -angle; 
+
+        context.save();
+        context.translate(x, y);
+        context.rotate(angle);
+        context.drawImage(img, -img.width / 2, -img.height / 2);
+        context.restore();
+      }
+
+      const music = document.getElementById('music');
+      music.play().catch(() => {
+        document.body.addEventListener('click', () => {
+          music.play();
+        }, { once: true });
+      });
+    };
+    </script>
+  </body>
+</html>
