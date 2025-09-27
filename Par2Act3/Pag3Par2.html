@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Photo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Luckiest+Guy&family=Rubik+Spray+Paint&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: url('Fondo2.png') center center / cover no-repeat;
+      display: flex;
+      justify-content: center; 
+      align-items: center;    
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column; 
+      align-items: center;    
+    }
+
+    h1 {
+      font-family: "Luckiest Guy", cursive;
+      font-weight: 400;
+      color: rgb(255, 255, 255);
+      font-size: 60px;
+      font-style: normal;
+      text-align: center;
+      margin-bottom: 20px; 
+      -webkit-text-stroke: 2px black; 
+    }
+
+    canvas {
+      display: block;
+      border: 15px solid white;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mario Super Star</h1>
+    <canvas id="canvas" width="900" height="450"></canvas>
+  </div>
+
+  <script>
+    window.onload = function () {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      const bg = new Image();
+      bg.src = "MarioFondo.jpg";
+
+      const ball = new Image();
+      ball.src = "star.png";
+
+      const scale = 0.8;
+      const amplitudeY = 50; 
+      const speed = 1.5;        
+      const jumpCount = 10;   
+
+      let x = ball.width * scale / 2; 
+      let direction = 1; 
+
+      let imagesLoaded = 0;
+      function checkImagesLoaded() {
+        imagesLoaded++;
+        if (imagesLoaded === 2) drawFrame();
+      }
+
+      bg.onload = checkImagesLoaded;
+      ball.onload = checkImagesLoaded;
+
+      function drawFrame() {
+        requestAnimationFrame(drawFrame);
+
+        ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+
+        x += speed * direction;
+
+        if (x >= canvas.width - ball.width * scale / 2) {
+          direction = -1;
+          x = canvas.width - ball.width * scale / 2;
+        } else if (x <= ball.width * scale / 2) {
+          direction = 1;
+          x = ball.width * scale / 2;
+        }
+
+        const y = canvas.height / 2 + Math.sin((x / canvas.width) * Math.PI * jumpCount) * amplitudeY;
+
+        const newW = ball.width * scale;
+        const newH = ball.height * scale;
+
+        ctx.drawImage(ball, x - newW / 2, y - newH / 2, newW, newH);
+      }
+    };
+  </script>
+</body>
+</html>
