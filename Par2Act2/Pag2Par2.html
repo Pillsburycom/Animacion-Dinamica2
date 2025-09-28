@@ -31,21 +31,25 @@
       const baseX = canvas.width / 2;
       const baseY = canvas.height / 2;
 
-      const amplitudeX = 500;  // rango horizontal
-      const amplitudeY = 40;   // rango vertical
-      const speed = 0.02;      // velocidad angular
+      const amplitudeX = 500;  
+      const amplitudeY = 40;   
+      const speed = 0.02;     
 
       let angle = 0;
-      const scale = 0.8;
+      const baseScale = 0.7;       
+      const scaleVariation = 0.1; 
 
       ball.onload = function () {
         function drawFrame() {
           requestAnimationFrame(drawFrame);
           context.clearRect(0, 0, canvas.width, canvas.height);
 
-          // Movimiento usando trigonometría
-          const x = baseX + Math.cos(angle) * amplitudeX;
-          const y = baseY + Math.sin(angle) * amplitudeY;
+
+          const x = baseX + Math.cos(angle) * amplitudeX; // COSENO
+          const y = baseY + Math.sin(angle) * amplitudeY; // SENO
+
+
+          const scale = baseScale + Math.sin(angle) * scaleVariation;
 
           const newW = ball.width * scale;
           const newH = ball.height * scale;
@@ -60,3 +64,5 @@
   </script>
 </body>
 </html>
+
+
