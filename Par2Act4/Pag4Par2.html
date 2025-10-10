@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Escenario simplificado con luna corregida</title>
+<style>
+  body {
+    background-color: #efa58c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  canvas {
+    border: 3px solid #efa58c;
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas" width="800" height="500"></canvas>
+<script>
+window.onload = function() {
+  const c = document.getElementById('canvas');
+  const ctx = c.getContext('2d');
+  const W = c.width;
+  const H = c.height;
+
+  // --- CIELO DIVIDIDO ---
+  ctx.fillStyle = '#87CEEB'; // azul claro (sol)
+  ctx.fillRect(0, 0, W / 2, H);
+  ctx.fillStyle = '#0b2a5a'; // azul oscuro (luna)
+  ctx.fillRect(W / 2, 0, W / 2, H);
+
+  // --- CÉSPED ---
+  ctx.fillStyle = '#4CAF50';
+  ctx.fillRect(0, H - 100, W, 100);
+
+  // --- SOL ---
+  ctx.fillStyle = 'yellow';
+  ctx.beginPath();
+  ctx.arc(100, 100, 40, 0, 2*Math.PI);
+  ctx.fill();
+
+  // rayos
+  for (let i=0;i<12;i++){
+    const angle = i * Math.PI*2 / 12;
+    const x1 = 100 + Math.cos(angle)*50;
+    const y1 = 100 + Math.sin(angle)*50;
+    const x2 = 100 + Math.cos(angle)*65;
+    const y2 = 100 + Math.sin(angle)*65;
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.strokeStyle = 'yellow';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+
+  // --- LUNA (círculo "borrado" con color de fondo) ---
+  const moonX = W - 100, moonY = 100, moonR = 30;
+  ctx.fillStyle = '#fffacd'; // luna
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, moonR, 0, 2*Math.PI);
+  ctx.fill();
+
+  // círculo encima para formar la media luna, usando color del cielo
+  ctx.fillStyle = '#0b2a5a'; // color del fondo de la mitad derecha
+  ctx.beginPath();
+  ctx.arc(moonX + 15, moonY, moonR, 0, 2*Math.PI);
+  ctx.fill();
+
+  // --- ESTRELLA al lado de la luna ---
+  const starX = W - 150, starY = 80, spikes = 5, outer = 20, inner = 8;
+  ctx.fillStyle = 'yellow';
+  ctx.beginPath();
+  for (let i=0;i<spikes;i++){
+    const rot = Math.PI/2*3 + i * Math.PI*2 / spikes;
+    const x = starX + Math.cos(rot)*outer;
+    const y = starY + Math.sin(rot)*outer;
+    ctx.lineTo(x,y);
+    const next = rot + Math.PI/spikes;
+    ctx.lineTo(starX + Math.cos(next)*inner, starY + Math.sin(next)*inner);
+  }
+  ctx.closePath();
+  ctx.fill();
+
+  // --- CASITA ---
+  const baseX = 250, baseY = H - 100;
+  ctx.fillStyle = '#ffc107';
+  ctx.fillRect(baseX, baseY-100, 120,100); // cuerpo
+  ctx.fillStyle = '#8B0000';
+  ctx.beginPath();
+  ctx.moveTo(baseX-10, baseY-100);
+  ctx.lineTo(baseX+60, baseY-160);
+  ctx.lineTo(baseX+130, baseY-100);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#795548';
+  ctx.fillRect(baseX+45, baseY-50, 30, 50); // puerta
+
+  // --- HONGUITO (solo puntos en el sombrero) ---
+  const hX = 600, hY = H - 130;
+
+  // sombrero
+  ctx.fillStyle = '#E53935';
+  ctx.beginPath();
+  ctx.arc(hX, hY-40, 50, Math.PI, 0, false);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#6D4C41';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // tallo
+  ctx.fillStyle = '#F4DAB5';
+  ctx.beginPath();
+  ctx.moveTo(hX-25, hY-40);
+  ctx.quadraticCurveTo(hX-15, hY+50, hX, hY+60);
+  ctx.quadraticCurveTo(hX+15, hY+50, hX+25, hY-40);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // puntos del sombrero
+  ctx.fillStyle = 'white';
+  const spots = [
+    {x:-20, y:-50, r:10},
+    {x:0, y:-65, r:12},
+    {x:20, y:-50, r:10}
+  ];
+  spots.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(hX+s.x, hY+s.y, s.r,0,2*Math.PI);
+    ctx.fill();
+  });
+
+};
+</script>
+</body>
+</html>
