@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Nave Espacial - Rebotes y Física</title>
+  <style>
+    body {
+      background: black;
+      margin: 0;
+      overflow: hidden;
+      color: white;
+      font-family: monospace;
+    }
+    canvas {
+      display: block;
+      margin: auto;
+      background: radial-gradient(#000, #010010, #020020);
+    }
+    #controles {
+      position: fixed;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.5);
+      padding: 10px 20px;
+      border: 1px solid #444;
+      border-radius: 10px;
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="space"></canvas>
+
+<div id="controles">
+  ← →  Rotar &nbsp;&nbsp;|&nbsp;&nbsp; ⎵ Espacio = Acelerar 🚀
+</div>
+
+<script>
+  const canvas = document.getElementById("space");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let ship = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    angle: 0,
+    speed: 0,
+    vx: 0,
+    vy: 0,
+    thrust: 0.05,
+    friction: 0.99,
+    maxSpeed: 6
+  };
+
+  let keys = {};
+
+  // ⭐ DIBUJAR NAVE Y FLAMA
+  function drawShip() {
+    ctx.save();
+    ctx.translate(ship.x, ship.y);
+    ctx.rotate(ship.angle);
+
+    // Cuerpo
+    ctx.beginPath();
+    ctx.moveTo(20, 0);
+    ctx.lineTo(-12, 14);
+    ctx.lineTo(-8, 6);
+    ctx.lineTo(-15, 0);
+    ctx.lineTo(-8, -6);
+    ctx.lineTo(-12, -14);
+    ctx.closePath();
+    ctx.strokeStyle = "#6ecbff";
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Ventana
+    ctx.beginPath();
+    ctx.arc(5, 0, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "#9be3ff";
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = "white";
+    ctx.stroke();
+
+    // Aletas
+    ctx.beginPath();
+    ctx.moveTo(-12, 14);
+    ctx.lineTo(-20, 20);
+    ctx.lineTo(-15, 0);
+    ctx.closePath();
+    ctx.strokeStyle = "#4fa3ff";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(-12, -14);
+    ctx.lineTo(-20, -20);
+    ctx.lineTo(-15, 0);
+    ctx.closePath();
+    ctx.strokeStyle = "#4fa3ff";
+    ctx.stroke();
+
+    // FLAMA
+    if (keys[" "] && ship.speed < ship.maxSpeed) {
+      ctx.beginPath();
+      ctx.moveTo(-15, -6);
+      ctx.lineTo(-35 - Math.random() * 10, 0);
+      ctx.lineTo(-15, 6);
+      ctx.closePath();
+
+      const grad = ctx.createLinearGradient(-15, 0, -40, 0);
+      grad.addColorStop(0, "yellow");
+      grad.addColorStop(0.5, "orange");
+      grad.addColorStop(1, "red");
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(-15, -3);
+      ctx.lineTo(-28 - Math.random() * 6, 0);
+      ctx.lineTo(-15, 3);
+      ctx.closePath();
+      ctx.fillStyle = "white";
+      ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
+  // ⭐ ESTRELLAS
+  const stars = Array.from({ length: 200 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: Math.random() * 2
+  }));
+
+  function drawStars() {
+    ctx.fillStyle = "white";
+    stars.forEach(s => {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  // ⭐ FÍSICAS CON REBOTE
+  function update() {
+    if (keys["ArrowLeft"]) ship.angle -= 0.08;
+    if (keys["ArrowRight"]) ship.angle += 0.08;
+
+    if (keys[" "]) {
+      ship.vx += Math.cos(ship.angle) * ship.thrust;
+      ship.vy += Math.sin(ship.angle) * ship.thrust;
+    }
+
+    ship.vx *= ship.friction;
+    ship.vy *= ship.friction;
+
+    ship.x += ship.vx;
+    ship.y += ship.vy;
+
+    // REBOTE
+    const bounceFactor = -0.7;
+
+    // derecha
+    if (ship.x > canvas.width) {
+      ship.x = canvas.width;
+      ship.vx *= bounceFactor;
+    }
+
+    // izquierda
+    if (ship.x < 0) {
+      ship.x = 0;
+      ship.vx *= bounceFactor;
+    }
+
+    // abajo
+    if (ship.y > canvas.height) {
+      ship.y = canvas.height;
+      ship.vy *= bounceFactor;
+    }
+
+    // arriba
+    if (ship.y < 0) {
+      ship.y = 0;
+      ship.vy *= bounceFactor;
+    }
+  }
+
+  // LOOP
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawStars();
+    update();
+    drawShip();
+    requestAnimationFrame(loop);
+  }
+
+  document.addEventListener("keydown", e => keys[e.key] = true);
+  document.addEventListener("keyup", e => keys[e.key] = false);
+
+  loop();
+</script>
+
+</body>
+</html>
