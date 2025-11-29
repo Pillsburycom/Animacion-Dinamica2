@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Reloj Rotacional</title>
+    <style>
+      body {
+        margin: 0;
+        background-image: url("Fondo.jpg");
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      canvas { 
+        background-image: url("reloj-01.png");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="600" height="600"></canvas>
+
+    <script>
+      window.onload = function () {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const cx = canvas.width / 2;  
+        const cy = canvas.height / 2;
+
+        // Carga de imágenes
+        const hora = new Image();
+        hora.src = "reloj-03.png";
+        const minuto = new Image();
+        minuto.src = "reloj-02.png";
+        const segundo = new Image();
+        segundo.src = "reloj-04.png";
+
+        // Velocidades
+        const vrHora = 0.1 * Math.PI / 180;
+        const vrMinuto = 0.5 * Math.PI / 180;
+        const vrSegundo = 2 * Math.PI / 180;
+
+        let radianesH = 0;
+        let radianesM = 0;
+        let radianesS = 0;
+
+        Promise.all([
+          new Promise(res => hora.onload = res),
+          new Promise(res => minuto.onload = res),
+          new Promise(res => segundo.onload = res)
+        ]).then(drawFrame);
+
+        function drawFrame() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // HORA (450x450)
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(radianesH);
+          ctx.drawImage(hora, -225, -225, 450, 450);
+          ctx.restore();
+
+          // MINUTO (480x480)
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(radianesM);
+          ctx.drawImage(minuto, -240, -240, 480, 480);
+          ctx.restore();
+
+          // SEGUNDO (500x500)
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(radianesS);
+          ctx.drawImage(segundo, -250, -250, 500, 500);
+          ctx.restore();
+
+          radianesH += vrHora;
+          radianesM += vrMinuto;
+          radianesS += vrSegundo;
+
+          requestAnimationFrame(drawFrame);
+        }
+      };
+    </script>
+  </body>
+</html>
